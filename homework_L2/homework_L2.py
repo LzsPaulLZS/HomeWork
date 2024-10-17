@@ -1,3 +1,11 @@
+def test():
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    print(a + b + c)
+
+
 '''
 ===================== 第二堂課 練習題 =====================
 '''
@@ -191,3 +199,10 @@ def test_process_time_sort_v3(n):
 
 # 調用函數
 # test_process_time_sort_v3(6)
+
+# 測試git PR 因此多加此行 
+# 再次多加一行
+# 再多加一行，測試PR 分支:update-homework-L2
+
+
+
