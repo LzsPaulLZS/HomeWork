@@ -1,13 +1,6 @@
-def test():
-    a = 1
-    b = 2
-    c = 3
-    d = 4
-    print(a + b + c)
-
-
 '''
 ===================== 第二堂課 練習題 =====================
+修正完成時間: 2024/10/20 01:13
 '''
 
 #%%
@@ -43,59 +36,79 @@ process_time_latest = [385, 400, 395, 375, 401, 389]
 2. 可用list.sort()來排序 (增加及刪除也放到提示)
 '''
 
-# L2 第一題
-def test_process_time_sort_v1():
+# L2 練習題
+def test_process_time_v1():
     process_time_latest = [385, 400, 395, 375, 401]
 
     while True:
-        user_Input = input("請輸入最新一次時間(ms): ")
+        user_Input = input("請輸入最新一次時間(ms) 或輸入 'exit'退出: ")
+        print()
 
         if user_Input.lower() == "exit":
             break
-        else:
-            try:
-                input_time = int(user_Input)
+
+        try:
+            input_time = int(user_Input)
+            # print(f"輸入的時間是: {input_time}")
+            if input_time < 0:
+                print("輸入的值不能小於 0，請重新輸入。")
+            else:
                 process_time_latest.append(input_time)
-                process_time_latest.sort()
+                latest_five = process_time_latest[-6:-1]
+                sort_latest = sorted(latest_five)
+                print(f'不包含本次，最新5筆時間為:{sort_latest}')
                 if input_time < process_time_latest[2]:
-                    print("pass")
+                    print(f"此次時間數據{input_time}與最新5筆數據相比，排名於前3名，故pass")
                 else:
-                    print("fail")
-                print(process_time_latest[:5])
-            except ValueError:
-                print("請輸入數字")
+                    print(f"此次時間數據{input_time}與最新5筆數據相比，落後前3名，故Fail")
+                print(f'所有數據依時間排序為:{process_time_latest[:]}')
+            print('-------------------------------------------------------------------')
+        except ValueError:
+            print("請輸入數字")
 
 # 調用函數
-test_process_time_sort_v1()
+# test_process_time_v1()
 
 
 #%%
 '''
 ===================== L2作業 =====================
-以練習題為基礎, 調整功能如下
-0. 鍾QA發現有時主管會調整排名標準, 請將此程式從"前3名pass"改為一個"前n名pass"的函式, n為參數
-1. 程式步驟調整如下
+以練習題為基礎, 調整功能如下:
+
+1. 鍾QA發現有時主管會調整排名標準
+→請將此程式從"前3名pass"改為一個"前n名pass"的函式, n為參數
+
+2. 程式步驟調整如下:
     a. 使用者輸入數據
-    b. 數據新增到csv
-    c. 查看新數據是否符合前n名標準
-2. csv須保留所有舊數據, 不做任何刪除
-3. 加分題: 查看前n名的邏輯時, 嘗試不使用sort()來達成. 請參考氣泡排序法檔案 (Bubble.zip)
+    b. 新增功能: 數據新增到csv
+    c. 查看新數據與最新5筆數據相比，是否符合前n名標準
+
+3. 補充: csv須保留所有舊數據, 不做任何刪除
+
+加分題
+查看前n名的邏輯時, 嘗試不使用sort()來達成. 請參考氣泡排序法檔案 (Bubble.py)
 '''
 
 import csv
+import sys
 
 # 以下請編寫您的L2作業
 
-# L2 第二題
+# L2 作業
 # 不使用 bubble 排序
-def test_process_time_sort_v2(n):
+def test_process_time_with_csv_v1(n):
+
+    if n > 5:
+        print('n必須小於等於5')
+        sys.exit()
+        
 
     process_time_latest = []
 
     # 初始化CSV文件
     with open('new_data.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['index', 'time(ms)', 'result', 'list'])
+        writer.writerow(['編號', '時間數據time(ms)', '結果result', '不包含本次，最新5筆數據排序' ,'完整數據list'])
 
     def print_csv_content():
         with open('new_data.csv', 'r') as file:
@@ -105,40 +118,53 @@ def test_process_time_sort_v2(n):
         print()  # 添加一個空行，以提高可讀性
 
     while True:
-        user_Input = input("請輸入最新一次時間(ms): ")
+        user_Input = input("請輸入最新一次時間(ms) 或輸入 'exit'退出: ")
+        print()
 
         if user_Input.lower() == "exit":
             break
-        else:
-            try:
-                input_time = int(user_Input)
+
+        try:
+            input_time = int(user_Input)
+            # print(f"輸入的時間是: {input_time}")
+            if input_time < 0:
+                print("輸入的值不能小於 0，請重新輸入。")
+            else:
                 process_time_latest.append(input_time)
-                process_time_latest.sort()
-                
-                if len(process_time_latest) < n:
-                    result = "pass"
-                elif input_time <= process_time_latest[n-1]:
-                    result = "pass"
+                if len(process_time_latest)< 6:
+                    result = f"此次時間數據{input_time}未大於總數據5筆，故pass"
+                    init_time = process_time_latest
+                    sort_latest = sorted(init_time)
+                    # print(f'所有數據依時間排序為:{process_time_latest[:]}')
                 else:
-                    result = "fail"
-                
-                print(result)
-                print(process_time_latest[:n])
+                    latest_five = process_time_latest[-6:-1]
+                    sort_latest = sorted(latest_five)
+                    print(f'不包含本次，最新5筆時間為:{sort_latest}')
+                    if input_time <= sort_latest[n-1]:
+                        result = f"此次時間數據{input_time}與最新5筆數據相比，排名於前{n}名，故pass"
 
-                # 將數據寫入CSV文件
-                with open('new_data.csv', 'a', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerow([len(process_time_latest), input_time, result,[str(process_time_latest[:n])]])
+                    else:
+                        result = f"此次時間數據{input_time}與最新5筆數據相比，落後前{n}名，故Fail"
+                    print(f'所有數據依時間排序為:{process_time_latest[:]}')
 
-                # 打印CSV的內容
-                print("\nCSV 內容:")
-                print_csv_content()
+                        # 將數據寫入CSV文件
+            with open('new_data.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([len(process_time_latest), input_time, result, sort_latest, [str(process_time_latest[:])]])
 
-            except ValueError:
-                print("請輸入數字")
+            # 打印CSV的內容
+            print("\nCSV 內容:")
+            print_csv_content()
+
+
+            print('-------------------------------------------------------------------')
+        except ValueError:
+            print("請輸入數字")
 
 # 調用函數
-# test_process_time_sort_v2(6)
+# test_process_time_with_csv_v1(3)
+
+
 
 
 # 使用 bubble 排序
@@ -148,14 +174,21 @@ def bubble_sort(arr):
         for j in range(0, n-i-1):
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr  # 返回排序後的列表
 
-def test_process_time_sort_v3(n):
+def test_process_time_with_csv_v2(n):
+
+    if n > 5:
+        print('n必須小於等於5')
+        sys.exit()
+        
+
     process_time_latest = []
 
     # 初始化CSV文件
     with open('new_data.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['index', 'time', 'result', 'list'])
+        writer.writerow(['編號', '時間數據time(ms)', '結果result', '不包含本次，最新5筆數據排序' ,'完整數據list'])
 
     def print_csv_content():
         with open('new_data.csv', 'r') as file:
@@ -165,40 +198,53 @@ def test_process_time_sort_v3(n):
         print()  # 添加一個空行，以提高可讀性
 
     while True:
-        user_Input = input("請輸入最新一次時間(ms): ")
+        user_Input = input("請輸入最新一次時間(ms) 或輸入 'exit'退出: ")
+        print()
 
         if user_Input.lower() == "exit":
             break
-        else:
-            try:
-                input_time = int(user_Input)
+
+        try:
+            input_time = int(user_Input)
+            # print(f"輸入的時間是: {input_time}")
+            if input_time < 0:
+                print("輸入的值不能小於 0，請重新輸入。")
+            else:
                 process_time_latest.append(input_time)
-                bubble_sort(process_time_latest)  # 使用冒泡排序替代 sort()
-                
-                if len(process_time_latest) < n:
-                    result = "pass"
-                elif input_time <= process_time_latest[n-1]:
-                    result = "pass"
+                if len(process_time_latest)< 6:
+                    result = f"此次時間數據{input_time}未大於總數據5筆，故pass"
+                    init_time = process_time_latest
+                    sort_latest = bubble_sort(init_time)
+                    # print(f'所有數據依時間排序為:{process_time_latest[:]}')
                 else:
-                    result = "fail"
-                
-                print(result)
-                print(process_time_latest[:n])
+                    latest_five = process_time_latest[-6:-1]
+                    sort_latest = bubble_sort(latest_five)
+                    print(f'不包含本次，最新5筆時間為:{sort_latest}')
+                    if input_time < sort_latest[n-1]:
+                        result = f"此次時間數據{input_time}與最新5筆數據相比，排名於前{n}名，故pass"
 
-                # 將數據寫入CSV文件
-                with open('new_data.csv', 'a', newline='') as file:
-                    writer = csv.writer(file)
-                    writer.writerow([len(process_time_latest), input_time, result, str(process_time_latest[:n])])
+                    else:
+                        result = f"此次時間數據{input_time}與最新5筆數據相比，落後前{n}名，故Fail"
+                    print(f'所有數據依時間排序為:{process_time_latest[:]}')
 
-                # 打印CSV的內容
-                print("\nCSV 內容:")
-                print_csv_content()
+                        # 將數據寫入CSV文件
+            with open('new_data.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([len(process_time_latest), input_time, result, sort_latest, [str(process_time_latest[:])]])
 
-            except ValueError:
-                print("請輸入數字")
+            # 打印CSV的內容
+            print("\nCSV 內容:")
+            print_csv_content()
+
+
+            print('-------------------------------------------------------------------')
+        except ValueError:
+            print("請輸入數字")
 
 # 調用函數
-# test_process_time_sort_v3(6)
+# test_process_time_with_csv_v2(3)
+
+
 
 # 測試git PR 因此多加此行 
 # 再次多加一行
@@ -206,3 +252,5 @@ def test_process_time_sort_v3(n):
 
 
 
+
+# %%
