@@ -1,4 +1,7 @@
+# L3 作業
 
+def test():
+    print('PR 測試')
 
 responses_new = [
     [200, 201],
